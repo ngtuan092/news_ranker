@@ -45,3 +45,28 @@ pprint.pprint(dictionary.token2id)
 new_doc = "Human computer interaction Human"
 new_vec = dictionary.doc2bow(new_doc.lower().split())
 print(new_vec)
+
+bow_corpus = [dictionary.doc2bow(text) for text in processed_corpus]
+pprint.pprint(bow_corpus)
+
+
+from gensim import models
+
+# train the model
+tfidf = models.TfidfModel(bow_corpus)
+
+# transform the "system minors" string
+words = "system minors".lower().split()
+print(tfidf[dictionary.doc2bow(words)])
+
+
+from gensim import similarities
+
+index = similarities.SparseMatrixSimilarity(tfidf[bow_corpus], num_features=12)
+
+query_document = text_corpus[-1].split()
+query_bow = dictionary.doc2bow(query_document)
+sims = index[tfidf[query_bow]]
+print(list(enumerate(sims)))
+
+
